@@ -17,9 +17,24 @@
 # * I2C-byte: D7 D6 D5 D4 BL EN RW RS                                       *
 # * ----------------------------------------------------------------------- */
 #
-#  i2c detect channel 1, i2c device address 0x3f
+#  Usage: i2cset [-f] [-y] [-m MASK] [-r] [-a] I2CBUS CHIP-ADDRESS DATA-ADDRESS [VALUE] ... [MODE]
+#    I2CBUS is an integer or an I2C bus name
+#    ADDRESS is an integer (0x03 - 0x77, or 0x00 - 0x7f if -a is given)
+#    MODE is one of:
+#      c (byte, no value)
+#      b (byte data, default)
+#      w (word data)
+#      i (I2C block data)
+#      s (SMBus block data)
+#      Append p for SMBus PEC
 #
-# ./Init.sh 1 0x3f
+# * ----------------------------------------------------------------------- *
+#
+# Device Address find : i2cdetect -y -r {i2c channel}
+#
+# * ----------------------------------------------------------------------- *
+#
+# Init Script usage : sudo ./Init.sh {i2c channel} {device addr}
 #
 # * ----------------------------------------------------------------------- */
 # Initialisation Routine Start
