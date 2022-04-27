@@ -119,7 +119,7 @@ static int i2c_send (int fd, bool d_type, bool bl,
 							byte_t *sdata, int size, int udelay)
 {
 	i2clcd_u ldata;
-	int s_cnt, i;
+	int s_cnt, i, ret;
 	bool iflag = (size == 0) ? true : false;
 	byte_t sbuf[64];
 
@@ -139,10 +139,16 @@ static int i2c_send (int fd, bool d_type, bool bl,
 		ldata.bits.e   = 1;	sbuf[s_cnt++] = ldata.byte;
 		ldata.bits.e   = 0;	sbuf[s_cnt++] = ldata.byte;
 	}
-	s_cnt = i2c_smbus_write_block_data(fd, 0, s_cnt, &sbuf[0]);
+	if (s_cnt > 32) {
+		ret  = i2c_smbus_write_block_data(fd, 0,         32, &sbuf[0]);
+		ret += i2c_smbus_write_block_data(fd, 0, s_cnt - 32, &sbuf[32]);
+	}
+	else
+		ret = i2c_smbus_write_block_data(fd, 0, s_cnt -  0, &sbuf[0]);
+
 	usleep(udelay);		usleep(DEFAULT_I2C_DELAY);
 
-	return	s_cnt ? false : true;
+	return	ret ? false : true;
 }
 
 //------------------------------------------------------------------------------
